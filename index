@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Совместное определение: "Вклад"</title>
+    <!-- Подключение Tailwind CSS для стилизации -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Установка шрифта Inter */
+        body { font-family: 'Inter', sans-serif; }
+        /* Пользовательские стили для карточек слов */
+        .word-card {
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            user-select: none;
+        }
+        .word-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .scrollable-area {
+            max-height: 50vh;
+            overflow-y: auto;
+        }
+    </style>
+    <script>
+        // Инициализация конфигурации Tailwind для кастомных цветов и шрифта
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-blue': '#1D4ED8',
+                        'secondary-green': '#059669',
+                        'light-gray': '#F9FAFB',
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-light-gray min-h-screen p-4 sm:p-8">
+
+    <div class="max-w-7xl mx-auto">
+        <!-- Заголовок и описание -->
+        <header class="text-center mb-10">
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-primary-blue mb-2">
+                Проект «Термин»: Что такое <span class="text-secondary-green">Вклад</span>?
+            </h1>
+            <p class="text-lg text-gray-600">
+                **Задача:** Определить, какие слова из списка обозначают **ВКЛАД** народов Центральной Азии в мировую культуру. Кликайте на слова, чтобы переместить их в нужный столбец.
+            </p>
+        </header>
+
+        <!-- Основная область сортировки -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+
+            <!-- 1. Слова, которые являются Вкладом (Contribution) -->
+            <div id="contribution-zone" class="bg-white p-6 rounded-xl shadow-lg border-4 border-secondary-green/50">
+                <h2 class="text-2xl font-bold text-secondary-green mb-4 border-b-2 border-secondary-green/30 pb-2 flex justify-between items-center">
+                    <span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                        ВКЛАД (Подходит)
+                    </span>
+                    <span id="contribution-count" class="text-lg font-normal bg-secondary-green text-white px-3 py-1 rounded-full">0</span>
+                </h2>
+                <div id="contribution-list" class="flex flex-wrap gap-3 scrollable-area min-h-[150px]">
+                    <!-- Сюда будут перемещаться слова, выбранные как "Вклад" -->
+                    <p class="text-gray-400 italic text-center w-full" id="placeholder-contribution">
+                        Кликните на слова справа, чтобы добавить их сюда.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 2. Остальные слова (Concepts/Unrelated) -->
+            <div id="concept-zone" class="bg-white p-6 rounded-xl shadow-lg border-4 border-gray-300">
+                <h2 class="text-2xl font-bold text-gray-700 mb-4 border-b-2 border-gray-300 pb-2 flex justify-between items-center">
+                    <span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                        </svg>
+                        Остальные слова (Не подходит)
+                    </span>
+                    <span id="concept-count" class="text-lg font-normal bg-gray-500 text-white px-3 py-1 rounded-full">0</span>
+                </h2>
+                <div id="concept-list" class="flex flex-wrap gap-3 scrollable-area min-h-[150px]">
+                    <!-- Исходный список слов будет загружен сюда -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Область для совместного определения -->
+        <div class="bg-primary-blue/10 p-6 rounded-xl shadow-lg">
+            <h2 class="text-2xl font-bold text-primary-blue mb-4">
+                III. Коллективное определение термина «Вклад»
+            </h2>
+            <p class="text-gray-600 mb-4">
+                Обсудите, что общего у всех слов в зеленой зоне (**ВКЛАД**). На основе этого сформулируйте итоговое, точное определение.
+            </p>
+            <textarea
+                id="final-definition"
+                rows="5"
+                class="w-full p-4 border-2 border-primary-blue rounded-lg focus:ring-primary-blue focus:border-primary-blue text-lg"
+                placeholder="Начните вводить здесь: Вклад — это..."
+            ></textarea>
+            <button onclick="saveDefinition()" class="mt-4 px-6 py-3 bg-primary-blue text-white font-semibold rounded-lg hover:bg-primary-blue/90 transition duration-150 shadow-md">
+                Сохранить определение
+            </button>
+            <p id="save-message" class="mt-3 text-sm text-secondary-green font-medium hidden">
+                Определение сохранено! Отлично поработали.
+            </p>
+        </div>
+
+    </div>
+
+    <!-- JavaScript логика -->
+    <script>
+        // Список слов для сортировки (32 слова)
+        const initialWords = [
+            // Вклад: Наука, Искусство, Технологии (Средневековье)
+            { text: "Астрономия", isContribution: true },
+            { text: "Математика", isContribution: true },
+            { text: "Медицина", isContribution: true },
+            { text: "Алгебра", isContribution: true },
+            { text: "Обсерватория", isContribution: true },
+            { text: "Архитектура", isContribution: true },
+            { text: "Книгопечатание", isContribution: true },
+            { text: "Шахматы", isContribution: true },
+
+            // Вклад: Эпоха Бронзы и Саков (Искусство, Технологии, Экономика)
+            { text: "Звериный Стиль", isContribution: true },
+            { text: "Металлургия Бронзы", isContribution: true },
+            { text: "Конное Дело", isContribution: true },
+            { text: "Ирригация", isContribution: true },
+            { text: "Золотые Изделия", isContribution: true },
+            { text: "Курганы", isContribution: true },
+            { text: "Шелковый Путь", isContribution: true },
+            { text: "Караван-сарай", isContribution: true },
+            { text: "Кочевое Скотоводство", isContribution: true },
+            { text: "Ткачество", isContribution: true },
+            { text: "Керамика", isContribution: true },
+
+            // Контекст / Понятия (Не являются прямым Вкладом в мировую культуру)
+            { text: "Территория", isContribution: false },
+            { text: "Климат", isContribution: false },
+            { text: "География", isContribution: false },
+            { text: "Горные Хребты", isContribution: false },
+            { text: "Степь", isContribution: false },
+            { text: "Андроново", isContribution: false }, // Название культуры
+            { text: "Сакское Племя", isContribution: false }, // Название группы
+            { text: "Каменный Век", isContribution: false }, // Исторический период
+            { text: "Кочевники", isContribution: false }, // Образ жизни
+            { text: "Воин", isContribution: false }, // Роль
+            { text: "Глина", isContribution: false }, // Материал
+            { text: "Геродот", isContribution: false }, // Личность/источник
+        ];
+
+        let wordsState = initialWords.map(word => ({
+            ...word,
+            isPlacedAsContribution: false // Изначально все слова в зоне "Не подходит"
+        }));
+
+        const contributionList = document.getElementById('contribution-list');
+        const conceptList = document.getElementById('concept-list');
+        const contributionCount = document.getElementById('contribution-count');
+        const conceptCount = document.getElementById('concept-count');
+        const placeholderContribution = document.getElementById('placeholder-contribution');
+
+        /**
+         * Переключает слово между зонами "Вклад" и "Остальные слова".
+         * @param {string} wordText - Текст слова для переключения.
+         */
+        function toggleWordPlacement(wordText) {
+            const index = wordsState.findIndex(w => w.text === wordText);
+            if (index === -1) return;
+
+            // Переключаем статус размещения
+            wordsState[index].isPlacedAsContribution = !wordsState[index].isPlacedAsContribution;
+            
+            // Перерисовываем интерфейс
+            renderWords();
+        }
+
+        /**
+         * Генерирует HTML для карточки слова.
+         * @param {object} word - Объект слова.
+         * @returns {string} HTML-строка карточки.
+         */
+        function createWordCard(word) {
+            const isContribution = word.isPlacedAsContribution;
+            // Стили для выбранного (Вклад) или невыбранного состояния
+            const classes = isContribution
+                ? 'bg-secondary-green text-white hover:bg-secondary-green/80 shadow-md'
+                : 'bg-primary-blue/10 text-primary-blue border border-primary-blue hover:bg-primary-blue/20';
+
+            return `
+                <div class="word-card ${classes} p-3 rounded-lg font-medium text-lg"
+                     onclick="toggleWordPlacement('${word.text}')">
+                    ${word.text}
+                </div>
+            `;
+        }
+
+        /**
+         * Перерисовывает слова в соответствующих зонах.
+         */
+        function renderWords() {
+            let contributionHtml = '';
+            let conceptHtml = '';
+            let contributionCountValue = 0;
+            let conceptCountValue = 0;
+
+            wordsState.forEach(word => {
+                const cardHtml = createWordCard(word);
+                if (word.isPlacedAsContribution) {
+                    contributionHtml += cardHtml;
+                    contributionCountValue++;
+                } else {
+                    conceptHtml += cardHtml;
+                    conceptCountValue++;
+                }
+            });
+
+            // Обновление списков
+            contributionList.innerHTML = contributionHtml;
+            conceptList.innerHTML = conceptHtml;
+
+            // Обновление счетчиков
+            contributionCount.textContent = contributionCountValue;
+            conceptCount.textContent = conceptCountValue;
+
+            // Скрытие/показ плейсхолдера
+            if (contributionCountValue > 0) {
+                placeholderContribution.classList.add('hidden');
+            } else {
+                placeholderContribution.classList.remove('hidden');
+            }
+        }
+
+        /**
+         * Функция для имитации сохранения определения (для демонстрации завершения).
+         */
+        function saveDefinition() {
+            const definition = document.getElementById('final-definition').value.trim();
+            const messageElement = document.getElementById('save-message');
+
+            if (definition.length > 10) {
+                messageElement.textContent = 'Определение успешно сохранено! Прекрасная работа.';
+                messageElement.classList.remove('hidden', 'text-red-500');
+                messageElement.classList.add('text-secondary-green');
+            } else {
+                messageElement.textContent = 'Пожалуйста, введите более полное определение.';
+                messageElement.classList.remove('hidden', 'text-secondary-green');
+                messageElement.classList.add('text-red-500');
+            }
+            setTimeout(() => {
+                messageElement.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Инициализация при загрузке страницы
+        window.onload = renderWords;
+    </script>
+
+</body>
+</html>
